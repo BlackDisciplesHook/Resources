@@ -576,4 +576,4 @@ table.insert(ESP.Connections, RenderStepped:Connect(function()
     ESP.Update()
 end))
 
--- return ESP
+return ESP
