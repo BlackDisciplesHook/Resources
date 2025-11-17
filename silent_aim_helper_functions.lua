@@ -1,8 +1,10 @@
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
-local LocalPlayer = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+local RenderStepped = RunService.RenderStepped
 
 local function IsInRadius(position, radius)
     local MousePosition = UserInputService:GetMouseLocation()
@@ -209,5 +211,9 @@ SilentAim.ExpectedArguments = {
 function SilentAim.ValidateArguments(Args, RayMethod)
     return #Args >= RayMethod.ArgCountRequired
 end
+
+RenderStepped:Connect(function()
+    SilentAim.Update()
+end)
 
 return SilentAim
