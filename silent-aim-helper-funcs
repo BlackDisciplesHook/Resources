@@ -18,6 +18,7 @@ local SilentAim = {
         bullet_teleport = false,
         hitchance = 50,
         hitparts = {"Head", "Torso"},
+        method = "Raycast",
 
         wall_check = false,
         invis_check = false,
