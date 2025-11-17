@@ -42,59 +42,6 @@ local SilentAim = {
     FOVCircleOutline = Drawing.new("Circle"),
 }
 
-SilentAim.ExpectedArguments = {
-    FindPartOnRayWithIgnoreList = {
-        ArgCountRequired = 3,
-        Args = { "Instance", "Ray", "table", "boolean", "boolean" }
-    },
-
-    FindPartOnRayWithWhitelist = {
-        ArgCountRequired = 3,
-        Args = { "Instance", "Ray", "table", "boolean" }
-    },
-
-    FindPartOnRay = {
-        ArgCountRequired = 2,
-        Args = { "Instance", "Ray", "Instance", "boolean", "boolean" }
-    },
-
-    Raycast = {
-        ArgCountRequired = 3,
-        Args = { "Instance", "Vector3", "Vector3", "RaycastParams" }
-    },
-
-    Spherecast = {
-        ArgCountRequired = 3,
-        Args = { "Vector3", "Vector3", "Number", "RaycastParams" }
-    },
-
-    Blockcast = {
-        ArgCountRequired = 3,
-        Args = { "CFrame", "Vector3", "Vector3", "RaycastParams" }
-    },
-
-    Boxcast = {
-        ArgCountRequired = 3,
-        Args = { "CFrame", "Vector3", "Vector3", "RaycastParams" }
-    },
-}
-
-function SilentAim.ValidateArguments(Args, RayMethod)
-    local Matches = 0
-
-    if #Args < RayMethod.ArgCountRequired then
-        return false
-    end
-
-    for Pos, Argument in next, Args do
-        if typeof(Argument) == RayMethod.Args[Pos] then
-            Matches = Matches + 1
-        end
-    end
-
-    return Matches >= RayMethod.ArgCountRequired
-end
-
 function SilentAim.WallCheck(Part)
     if not SilentAim.Config.wall_check then
         return true
@@ -220,6 +167,47 @@ function SilentAim.CalculateChance(Percentage)
     Percentage = math.floor(Percentage)
     local chance = math.floor(Random.new().NextNumber(Random.new(), 0, 1) * 100) / 100
     return chance <= Percentage / 100
+end
+
+SilentAim.ExpectedArguments = {
+    FindPartOnRayWithIgnoreList = {
+        ArgCountRequired = 2,
+        Args = { "Instance", "Ray", "table", "boolean", "boolean" }
+    },
+
+    FindPartOnRayWithWhitelist = {
+        ArgCountRequired = 2,
+        Args = { "Instance", "Ray", "table", "boolean" }
+    },
+
+    FindPartOnRay = {
+        ArgCountRequired = 1,
+        Args = { "Instance", "Ray", "Instance", "boolean", "boolean" }
+    },
+
+    Raycast = {
+        ArgCountRequired = 2,
+        Args = { "Instance", "Vector3", "Vector3", "RaycastParams" }
+    },
+
+    Spherecast = {
+        ArgCountRequired = 3,
+        Args = { "Instance", "Vector3", "Vector3", "number", "RaycastParams" }
+    },
+
+    Blockcast = {
+        ArgCountRequired = 3,
+        Args = { "Instance", "CFrame", "Vector3", "Vector3", "RaycastParams" }
+    },
+
+    Boxcast = {
+        ArgCountRequired = 3,
+        Args = { "Instance", "CFrame", "Vector3", "Vector3", "RaycastParams" }
+    },
+}
+
+function SilentAim.ValidateArguments(Args, RayMethod)
+    return #Args >= RayMethod.ArgCountRequired
 end
 
 return SilentAim
