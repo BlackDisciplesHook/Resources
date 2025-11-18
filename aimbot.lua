@@ -11,7 +11,6 @@ local Aimbot = {
         Enabled = false,
         Smoothness = 1,
         Aimpart = "Head",
-
         WallCheck = false,
         TeamCheck = false,
         InvisCheck = false,
@@ -21,7 +20,6 @@ local Aimbot = {
     FOVConfig = {
         Enabled = false,
         Visible = false,
-
         Color = Color3.new(1, 1, 1),
         NumSides = 12,
         Transparency = 1,
@@ -33,7 +31,7 @@ local Aimbot = {
     Locked = false,
     Connections = {},
     FOVCircle = Drawing.new("Circle"),
-    FOVCircleOutline =  Drawing.new("Circle"),
+    FOVCircleOutline = Drawing.new("Circle"),
 }
 
 local function IsInRadius(position, radius)
@@ -66,7 +64,6 @@ function Aimbot.WallCheck(Part)
         local HitPart = RayResult.Instance
         local HitCharacter = HitPart:FindFirstAncestorOfClass("Model")
         local TargetCharacter = Part:FindFirstAncestorOfClass("Model")
-
         return HitCharacter == TargetCharacter
     end
 
@@ -94,7 +91,7 @@ function Aimbot.HasForceField(Player)
         return true
     end
 
-    return Player and Player.Character and Player.Character:FindFirstChildOfClass("ForceField") == nil
+    return Player and Player.Character and not Player.Character:FindFirstChildOfClass("ForceField")
 end
 
 function Aimbot.IsAlive(Player)
@@ -110,20 +107,12 @@ Aimbot.GetClosestPlayer = function()
     local mouse_pos = UserInputService:GetMouseLocation()
 
     for _, player in next, Players:GetPlayers() do
-        if player ~= LocalPlayer and not table.find(getgenv().Whitelist, player.Name) then
+        if player ~= LocalPlayer then
             local character = player.Character
-            if character and character:FindFirstChild(Aimbot.Config.Aimpart) then
-                if Aimbot.TeamCheck(player) then
-                    continue
-                end
-
-                if Aimbot.IsAlive(player) then
-                    continue
-                end
-
-                if Aimbot.HasForceField(player) then
-                    continue
-                end
+            if character and character:FindFirstChild(Aimbot.Config.Aimpart) and character:FindFirstChild("Humanoid") then
+                if not Aimbot.TeamCheck(player) then continue end
+                if not Aimbot.IsAlive(player) then continue end
+                if not Aimbot.HasForceField(player) then continue end
 
                 local aim_part = character[Aimbot.Config.Aimpart]
                 local aim_part_position, on_screen = Camera:WorldToViewportPoint(aim_part.Position)
@@ -133,7 +122,7 @@ Aimbot.GetClosestPlayer = function()
                     local distance = (mouse_pos - aim_vector).Magnitude
 
                     if distance < closest_distance then
-                        if not Aimbot.FOVConfig.enabled or IsInRadius(aim_vector, Aimbot.FOVConfig.radius) then
+                        if not Aimbot.FOVConfig.Enabled or IsInRadius(aim_vector, Aimbot.FOVConfig.Radius) then
                             if Aimbot.IsVisible(player) and Aimbot.WallCheck(aim_part) then
                                 closest_player = player
                                 closest_distance = distance
@@ -151,56 +140,46 @@ end
 Aimbot.Update = function()
     local MousePosition = UserInputService:GetMouseLocation()
 
+    if Aimbot.FOVConfig.Enabled then
+        local FOVCircle = Aimbot.FOVCircle
+        FOVCircle.Radius = Aimbot.FOVConfig.Radius
+        FOVCircle.Thickness = Aimbot.FOVConfig.Thickness
+        FOVCircle.Filled = Aimbot.FOVConfig.Filled
+        FOVCircle.NumSides = Aimbot.FOVConfig.NumSides
+        FOVCircle.Color = Aimbot.FOVConfig.Color
+        FOVCircle.Transparency = Aimbot.FOVConfig.Transparency
+        FOVCircle.Visible = Aimbot.FOVConfig.Visible
+        FOVCircle.Position = Vector2.new(MousePosition.X, MousePosition.Y)
+        FOVCircle.ZIndex = 11
+
+        local FOVCircleOutline = Aimbot.FOVCircleOutline
+        FOVCircleOutline.Radius = Aimbot.FOVConfig.Radius
+        FOVCircleOutline.Thickness = Aimbot.FOVConfig.Thickness + 2
+        FOVCircleOutline.NumSides = Aimbot.FOVConfig.NumSides
+        FOVCircleOutline.Color = Color3.new(0, 0, 0)
+        FOVCircleOutline.Transparency = Aimbot.FOVConfig.Transparency
+        FOVCircleOutline.Visible = Aimbot.FOVConfig.Visible
+        FOVCircleOutline.Position = Vector2.new(MousePosition.X, MousePosition.Y)
+        FOVCircleOutline.ZIndex = 10
+    else
+        Aimbot.FOVCircle.Visible = false
+        Aimbot.FOVCircleOutline.Visible = false
+    end
+
     if Aimbot.Config.Enabled then
         local ClosestPlayer = Aimbot.GetClosestPlayer()
-        Aimbot.Locked = Options and Options.AimbotBind:GetState()
-
-        if Aimbot.FOVConfig.Enabled then
-            local FOVCircle = Aimbot.FOVCircle
-            FOVCircle.Radius = Aimbot.FOVConfig.Radius
-            FOVCircle.Thickness = Aimbot.FOVConfig.Thickness
-            FOVCircle.Filled = Aimbot.FOVConfig.Filled
-            FOVCircle.NumSides = Aimbot.FOVConfig.NumSides
-            FOVCircle.Color = Aimbot.FOVConfig.Color
-            FOVCircle.Transparency = Aimbot.FOVConfig.Transparency
-            FOVCircle.Visible = Aimbot.FOVConfig.Visible
-            FOVCircle.Position = Vector2.new(MousePosition.X, MousePosition.Y)
-            FOVCircle.ZIndex = 11
-
-            local FOVCircleOutline = Aimbot.FOVCircleOutline
-            FOVCircleOutline.Radius = Aimbot.FOVConfig.Radius
-            FOVCircleOutline.Thickness = Aimbot.FOVConfig.Thickness + 2
-            FOVCircleOutline.NumSides = Aimbot.FOVConfig.NumSides
-            FOVCircleOutline.Color = Color3.new(0, 0, 0)
-            FOVCircleOutline.Transparency = Aimbot.FOVConfig.Transparency
-            FOVCircleOutline.Visible = Aimbot.FOVConfig.Visible
-            FOVCircleOutline.Position = Vector2.new(MousePosition.X, MousePosition.Y)
-            FOVCircleOutline.ZIndex = 10
-        else
-            Aimbot.FOVCircle.Visible = false
-            Aimbot.FOVCircleOutline.Visible = false
-        end
+        Aimbot.Locked = Options and Options.AimbotBind:GetState() --ClosestPlayer ~= nil
 
         if Aimbot.Locked and ClosestPlayer then
-                local AimPartPosition = ClosestPlayer.Character[Aimbot.Config.aimpart].Position
+            local AimPartPosition = ClosestPlayer.Character[Aimbot.Config.Aimpart].Position
+            local Vector = Camera:WorldToViewportPoint(AimPartPosition)
+            local DeltaX = (Vector.X - MousePosition.X) / Aimbot.Config.Smoothness
+            local DeltaY = (Vector.Y - MousePosition.Y) / Aimbot.Config.Smoothness
 
-            if Aimbot.Config.Method == "Mouse" then
-                local Vector = Camera:WorldToViewportPoint(AimPartPosition)
-                local DeltaX = (Vector.X - MousePosition.X) * math.clamp(Aimbot.Config.Smoothness, 0.1, 1)
-                local DeltaY = (Vector.Y - MousePosition.Y) * math.clamp(Aimbot.Config.Smoothness, 0.1, 1)
-
-                mousemoverel(DeltaX, DeltaY)
-            else
-                local TargetCFrame = CFrame.new(Camera.CFrame.Position, AimPartPosition)
-                Camera.CFrame = Camera.CFrame:Lerp(TargetCFrame, Aimbot.Config.Smoothness)
-            end
-        else
-            Aimbot.Locked = false
+            mousemoverel(DeltaX, DeltaY)
         end
     else
         Aimbot.Locked = false
-        Aimbot.FOVCircle.Visible = false
-        Aimbot.FOVCircleOutline.Visible = false
     end
 end
 
