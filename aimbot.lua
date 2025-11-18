@@ -101,7 +101,7 @@ function Aimbot.IsAlive(Player)
 end
 
 Aimbot.GetClosestPlayer = function()
-    if not Aimbot.Config.enabled then
+    if not Aimbot.Config.Enabled then
         return nil
     end
 
