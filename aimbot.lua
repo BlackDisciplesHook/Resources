@@ -9,7 +9,7 @@ local RenderStepped = RunService.RenderStepped
 local Aimbot = {
     Config = {
         Enabled = false,
-        Smoothness = 1,
+        Smoothness = 0.01,
         Aimpart = "Head",
         Method = "Camera",
 
