@@ -11,7 +11,6 @@ local Aimbot = {
         Enabled = false,
         Smoothness = 1,
         Aimpart = "Head",
-        Method = "Camera",
 
         WallCheck = false,
         TeamCheck = false,
@@ -31,6 +30,7 @@ local Aimbot = {
         Filled = false
     },
 
+    Locked = false,
     Connections = {},
     FOVCircle = Drawing.new("Circle"),
     FOVCircleOutline =  Drawing.new("Circle"),
@@ -102,7 +102,7 @@ function Aimbot.IsAlive(Player)
 end
 
 Aimbot.GetClosestPlayer = function()
-    if not Aimbot.Config.Enabled then
+    if not Aimbot.Config.enabled then
         return nil
     end
 
@@ -153,7 +153,7 @@ Aimbot.Update = function()
 
     if Aimbot.Config.Enabled then
         local ClosestPlayer = Aimbot.GetClosestPlayer()
-        Aimbot.Locked = Options and Options.AimbotBind:GetState() or false
+        Aimbot.Locked = Options and Options.AimbotBind:GetState()
 
         if Aimbot.FOVConfig.Enabled then
             local FOVCircle = Aimbot.FOVCircle
@@ -168,7 +168,7 @@ Aimbot.Update = function()
             FOVCircle.ZIndex = 11
 
             local FOVCircleOutline = Aimbot.FOVCircleOutline
-            FOVCircleOutline.Radius = Aimbot.FOVConfig.radius
+            FOVCircleOutline.Radius = Aimbot.FOVConfig.Radius
             FOVCircleOutline.Thickness = Aimbot.FOVConfig.Thickness + 2
             FOVCircleOutline.NumSides = Aimbot.FOVConfig.NumSides
             FOVCircleOutline.Color = Color3.new(0, 0, 0)
@@ -184,7 +184,7 @@ Aimbot.Update = function()
         if Aimbot.Locked and ClosestPlayer then
                 local AimPartPosition = ClosestPlayer.Character[Aimbot.Config.aimpart].Position
 
-            if Aimbot.Config.Method == "Mouse" then
+            if Aimbot.Config.method == "Mouse" then
                 local Vector = Camera:WorldToViewportPoint(AimPartPosition)
                 local DeltaX = (Vector.X - MousePosition.X) * math.clamp(Aimbot.Config.Smoothness, 0.1, 1)
                 local DeltaY = (Vector.Y - MousePosition.Y) * math.clamp(Aimbot.Config.Smoothness, 0.1, 1)
