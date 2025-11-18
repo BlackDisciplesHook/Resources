@@ -11,6 +11,7 @@ local Aimbot = {
         Enabled = false,
         Smoothness = 1,
         Aimpart = "Head",
+        Method = "Camera",
 
         WallCheck = false,
         TeamCheck = false,
@@ -183,7 +184,7 @@ Aimbot.Update = function()
         if Aimbot.Locked and ClosestPlayer then
                 local AimPartPosition = ClosestPlayer.Character[Aimbot.Config.aimpart].Position
 
-            if Aimbot.Config.method == "Mouse" then
+            if Aimbot.Config.Method == "Mouse" then
                 local Vector = Camera:WorldToViewportPoint(AimPartPosition)
                 local DeltaX = (Vector.X - MousePosition.X) * math.clamp(Aimbot.Config.Smoothness, 0.1, 1)
                 local DeltaY = (Vector.Y - MousePosition.Y) * math.clamp(Aimbot.Config.Smoothness, 0.1, 1)
