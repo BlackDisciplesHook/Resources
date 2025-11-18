@@ -24,7 +24,7 @@ local Aimbot = {
         Visible = false,
 
         Color = Color3.new(1, 1, 1),
-        NumSides = 12,
+        NumSides = 60,
         Transparency = 1,
         Radius = 100,
         Thickness = 1,
