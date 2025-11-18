@@ -11,7 +11,8 @@ local Aimbot = {
         Enabled = false,
         Smoothness = 1,
         Aimpart = "Head",
-        
+        Method = "Camera",
+
         WallCheck = false,
         TeamCheck = false,
         InvisCheck = false,
@@ -21,7 +22,7 @@ local Aimbot = {
     FOVConfig = {
         Enabled = false,
         Visible = false,
-        
+
         Color = Color3.new(1, 1, 1),
         NumSides = 12,
         Transparency = 1,
