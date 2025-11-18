@@ -11,6 +11,7 @@ local Aimbot = {
         Enabled = false,
         Smoothness = 1,
         Aimpart = "Head",
+        
         WallCheck = false,
         TeamCheck = false,
         InvisCheck = false,
@@ -20,6 +21,7 @@ local Aimbot = {
     FOVConfig = {
         Enabled = false,
         Visible = false,
+        
         Color = Color3.new(1, 1, 1),
         NumSides = 12,
         Transparency = 1,
@@ -171,12 +173,18 @@ Aimbot.Update = function()
         Aimbot.Locked = Options and Options.AimbotBind:GetState() --ClosestPlayer ~= nil
 
         if Aimbot.Locked and ClosestPlayer then
-            local AimPartPosition = ClosestPlayer.Character[Aimbot.Config.Aimpart].Position
-            local Vector = Camera:WorldToViewportPoint(AimPartPosition)
-            local DeltaX = (Vector.X - MousePosition.X) / Aimbot.Config.Smoothness
-            local DeltaY = (Vector.Y - MousePosition.Y) / Aimbot.Config.Smoothness
+            local AimPartPosition = ClosestPlayer.Character[Aimbot.Config.aimpart].Position
 
-            mousemoverel(DeltaX, DeltaY)
+            if Aimbot.Config.Method == "Mouse" then
+                local Vector = Camera:WorldToViewportPoint(AimPartPosition)
+                local DeltaX = (Vector.X - MousePosition.X) * math.clamp(Aimbot.Config.Smoothness, 0.1, 1)
+                local DeltaY = (Vector.Y - MousePosition.Y) * math.clamp(Aimbot.Config.Smoothness, 0.1, 1)
+
+                mousemoverel(DeltaX, DeltaY)
+            else
+                local TargetCFrame = CFrame.new(Camera.CFrame.Position, AimPartPosition)
+                Camera.CFrame = Camera.CFrame:Lerp(TargetCFrame, Aimbot.Config.Smoothness)
+            end
         end
     else
         Aimbot.Locked = false
