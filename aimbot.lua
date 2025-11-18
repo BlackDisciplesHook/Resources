@@ -112,7 +112,7 @@ Aimbot.GetClosestPlayer = function()
     for _, player in next, Players:GetPlayers() do
         if player ~= LocalPlayer then
             local character = player.Character
-            if character and character:FindFirstChild(Aimbot.Config.Aimpart) and character:FindFirstChild("Humanoid") then
+            if character and character:FindFirstChild(Aimbot.Config.Aimpart) then
                 if not Aimbot.TeamCheck(player) then continue end
                 if not Aimbot.IsAlive(player) then continue end
                 if not Aimbot.HasForceField(player) then continue end
@@ -174,7 +174,7 @@ Aimbot.Update = function()
         Aimbot.Locked = Options and Options.AimbotBind:GetState() --ClosestPlayer ~= nil
 
         if Aimbot.Locked and ClosestPlayer then
-            local AimPartPosition = ClosestPlayer.Character[Aimbot.Config.aimpart].Position
+            local AimPartPosition = ClosestPlayer.Character[Aimbot.Config.Aimpart].Position
 
             if Aimbot.Config.Method == "Mouse" then
                 local Vector = Camera:WorldToViewportPoint(AimPartPosition)
