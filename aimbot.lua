@@ -9,7 +9,7 @@ local RenderStepped = RunService.RenderStepped
 local Aimbot = {
     Config = {
         Enabled = false,
-        Smoothness = 0.01,
+        Smoothness = 1,
         Aimpart = "Head",
         Method = "Camera",
 
@@ -24,7 +24,7 @@ local Aimbot = {
         Visible = false,
 
         Color = Color3.new(1, 1, 1),
-        NumSides = 60,
+        NumSides = 12,
         Transparency = 1,
         Radius = 100,
         Thickness = 1,
@@ -110,12 +110,20 @@ Aimbot.GetClosestPlayer = function()
     local mouse_pos = UserInputService:GetMouseLocation()
 
     for _, player in next, Players:GetPlayers() do
-        if player ~= LocalPlayer then
+        if player ~= LocalPlayer and not table.find(getgenv().Whitelist, player.Name) then
             local character = player.Character
             if character and character:FindFirstChild(Aimbot.Config.Aimpart) then
-                if not Aimbot.TeamCheck(player) then continue end
-                if not Aimbot.IsAlive(player) then continue end
-                if not Aimbot.HasForceField(player) then continue end
+                if not Aimbot.TeamCheck(player) then
+                    continue
+                end
+
+                if not Aimbot.IsAlive(player) then
+                    continue
+                end
+
+                if not Aimbot.HasForceField(player) then
+                    continue
+                end
 
                 local aim_part = character[Aimbot.Config.Aimpart]
                 local aim_part_position, on_screen = Camera:WorldToViewportPoint(aim_part.Position)
